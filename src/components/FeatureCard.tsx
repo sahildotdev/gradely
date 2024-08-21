@@ -1,18 +1,12 @@
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
-//import Image from "next/image";
-import Chip from "./Chip";
-import HeartIcon from "./icons/HeartIcon";
+import Chip, { ChipProps } from "./Chip";
 
 interface FeatureCardProps {
   imageSrc: string;
   imageAlt: string;
   title: string;
   description: string;
-  subject: string;
-  readTime: string;
-  wordCount: string;
-  rating: string;
-  language: string;
+  chips?: ChipProps[];
+  className?: string;
 }
 
 const FeatureCard: React.FC<FeatureCardProps> = ({
@@ -20,44 +14,37 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
   imageAlt,
   title,
   description,
-  subject,
-  readTime,
-  wordCount,
-  rating,
-  language,
-}) => {
+  chips,
+  className = "",
+}: FeatureCardProps) => {
   return (
-    <Card className="flex flex-row items-center p-4 bg-gradient-to-r from-purple-100 to-white rounded-lg shadow-lg">
+    <div className="flex flex-row items-start p-6  bg-gradient-to-r from-purple-100 to-white rounded-lg shadow-lg max-w-full w-[460px]">
       {/* Image Section */}
-      <div className="">
+      <div className="bg-white relative w-[120px] h-[160px] p-1 rounded-lg rounded-bl-lg border border-gray-300 overflow-hidden">
         <img
           src={imageSrc}
           alt={imageAlt}
-          width={100}
-          height={100}
-          className="rounded-lg object-cover"
+          className="w-full h-full object-fill"
         />
       </div>
 
       {/* Content Section */}
-      <div className="w-2/3 pl-4">
-        <CardHeader className="text-xl font-bold text-gray-800">
+      <div className="flex-1 pl-4">
+        <h2 className="text-lg font-Mont font-extrabold leading-6 text-gray-800">
           {title}
-        </CardHeader>
-        <CardContent className="text-gray-600">
-          <p className="text-base">{description}</p>
-          <div className="flex items-center mt-4 space-x-2">
-            <Chip label={subject} icon={<HeartIcon />} color="primary" />
-            <Chip label={readTime} icon={<HeartIcon />} color="secondary" />
-            <Chip label={`${wordCount} words`} icon={<HeartIcon />} />
+        </h2>
+        <p className="text-xs font-Mont font-semibold leading-4 text-gray-600 mt-2">
+          {description}
+        </p>
+        {chips && (
+          <div className="mt-2 flex flex-wrap gap-1">
+            {chips.map((chip, index) => (
+              <Chip key={index} {...chip} />
+            ))}
           </div>
-          <div className="flex items-center mt-2 space-x-2">
-            <Chip label={rating} icon={<HeartIcon />} color="destructive" />
-            <Chip label={language} />
-          </div>
-        </CardContent>
+        )}
       </div>
-    </Card>
+    </div>
   );
 };
 

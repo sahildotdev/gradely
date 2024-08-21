@@ -52,9 +52,9 @@ export default function FileUploadAndForm() {
   };
 
   return (
-    <div className="bg-[#FCFBFD] justify-center content-center rounded-3xl border-[1px] p-5">
+    <div className="bg-[#FCFBFD] rounded-3xl border-[1px] p-5">
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 ">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="bg-white content-center justify-center ">
             <FormControl>
               <>
@@ -65,20 +65,24 @@ export default function FileUploadAndForm() {
                   className="hidden"
                   id="file-upload"
                 />
-                <div className="content-center justify-center text-center">
-                  <label
-                    htmlFor="file-upload"
-                    className="cursor-pointer block border-dashed border-[1px] border-gray-300 rounded-lg p-20"
-                  >
-                    <MdUploadFile className="size-12 justify-center" />
 
+                <div className="flex flex-col text-center border-dashed border-[1px] border-gray-300 rounded-lg p-10">
+                  <div className="flex justify-center content-center ">
+                    <MdUploadFile className="size-12 fill-[#98A1BB] " />
+                  </div>
+                  <label htmlFor="file-upload" className="cursor-pointer">
                     <div>
-                      <p className="text-gray-500">Drag and drop a PDF</p>
-                      <p className="text-gray-400">Limit 25 MB per file</p>
+                      <p className="text-gray-400 font-Mont font-bold text-base">
+                        Drag and drop a PDF
+                      </p>
+                      <p className="text-gray-400 font-Mont font-semibold text-base">
+                        Limit 25 MB per file
+                      </p>
                     </div>
                     <Button
                       type="submit"
-                      className="mt-4 bg-white text-[#6947BF] font-extrabold text-base rounded-3xl border-[1px] border-[#CEC4EB]"
+                      variant="outline"
+                      className="mt-4  bg-white text-[#6947BF] border-[#CEC4EB] focus:outline-none font-extrabold text-base rounded-3xl border-[1px]"
                     >
                       Upload your file
                     </Button>
@@ -94,7 +98,7 @@ export default function FileUploadAndForm() {
             <Label className="mb-2 text-sm font-semibold" htmlFor="framework">
               Select your course & subjects*
             </Label>
-            <div className="flex w-[40%] justify-between">
+            <div className="flex gap-5">
               <div className="flex flex-col space-y-5">
                 <FormControl>
                   <>
@@ -147,10 +151,10 @@ export default function FileUploadAndForm() {
               </div>
             </div>
           </div>
-          <div className="">
+          <div className="flex flex-col w-[30%] ">
             <FormControl>
               <>
-                <FormLabel>Enter your essay title</FormLabel>
+                <FormLabel className="mb-2">Enter your essay title</FormLabel>
                 <Input
                   type="text"
                   placeholder="Enter your essay title"
@@ -163,7 +167,11 @@ export default function FileUploadAndForm() {
             </FormControl>
           </div>
 
-          <Button type="submit" variant="default" className="mt-4 ">
+          <Button
+            type="submit"
+            variant="default"
+            className=" font-Mont rounded-3xl mt-4 bg-[#ADB8C9] "
+          >
             Evaluate your Score
           </Button>
         </form>

@@ -52,12 +52,12 @@ const Chip: React.FC<ChipProps> = ({
     >
       {icon && <span className="mr-2">{icon}</span>}
       {avatar && (
-        <Avatar className="w-6 h-6 mr-2">
+        <Avatar className="size-4 mr-2">
           <AvatarImage src={avatar.src} alt={avatar.alt || label} />
           <AvatarFallback>{avatar.fallback}</AvatarFallback>
         </Avatar>
       )}
-      <span>{label}</span>
+      <span className="font-Mont font-bold text-xs">{label}</span>
     </Badge>
   );
 };
