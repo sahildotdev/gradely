@@ -1,34 +1,66 @@
 "use client";
 
-import { Card, CardContent } from "./ui/card";
+import Card from "./Card";
+import FeatureCard from "./FeatureCard";
 
 export default function CourseworkList() {
   return (
-    <div className="mt-8">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-        My Coursework
-      </h2>
-      <div className="grid grid-cols-3 gap-4">
-        <Card className="shadow-md">
-          <CardContent>
-            <p className="font-bold">How does the temperature of a Copper...</p>
-            <p className="text-sm text-gray-600">Physics | EE | 1200 words</p>
-          </CardContent>
-        </Card>
-        <Card className="shadow-md">
-          <CardContent>
-            <p className="font-bold">How does the temperature of a Copper...</p>
-            <p className="text-sm text-gray-600">Physics | EE | 1200 words</p>
-          </CardContent>
-        </Card>
-        <Card className="shadow-md">
-          <CardContent>
-            <p className="font-bold">How does the temperature of a Copper...</p>
-            <p className="text-sm text-gray-600">Physics | EE | 1200 words</p>
-          </CardContent>
-        </Card>
-        {/* Repeat Card for each coursework item */}
-      </div>
+    <div>
+      {/*<Card
+        title="How does the temperature of a Copper pipe affect the time it takes a magnet to fall thought "
+        description="How does the temperature of a Copper pipe affect the time it takes a magnet to fall thought "
+        image="./A4.svg"
+        chips={[
+          {
+            label: "Avatar Chip",
+            avatar: { src: "./avatar.svg", fallback: "A", alt: "Physics HL" },
+          },
+          {
+            label: "18 min read",
+            avatar: {
+              src: "./clock.png",
+              alt: "Physics HL",
+              fallback: "HL",
+            },
+          },
+          {
+            label: "2388 words",
+            avatar: {
+              src: "./paper3d.png",
+              alt: "Physics HL",
+              fallback: "HL",
+            },
+          },
+          {
+            label: "7/7",
+            avatar: {
+              src: "./star.png",
+              alt: "Physics HL",
+              fallback: "HL",
+            },
+          },
+          {
+            label: "English",
+            avatar: {
+              src: "./HandGesture.png",
+              alt: "Physics HL",
+              fallback: "HL",
+            },
+          },
+        ]}
+      />*/}
+
+      <FeatureCard
+        imageSrc="./A4.svg"
+        imageAlt="Document preview"
+        title="How does the temperature of a Copp..."
+        description="How does the temperature of a Copper pipe affect the time it takes a magnet t..."
+        subject="Physics HL"
+        readTime="18 min read"
+        wordCount="2388"
+        rating="7/7"
+        language="English"
+      />
     </div>
   );
 }

@@ -6,16 +6,23 @@ import React from "react";
 
 export default function Header() {
   return (
-    <section className="">
-      <div className="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
-        <div className="mr-auto place-self-center lg:col-span-7">
-          <h1 className="font-[mont] font-extrabold text-[32px] text-gray-800">
-            Hey IB Folks ! Unsure about the quality of your answers? We get you.
+    <section className="py-10">
+      <div className="flex justify-between mx-auto px-6">
+        <div className="flex flex-col space-y-8 justify-center">
+          <h1 className="font-Mont text-[2.5rem] font-bold text-[#2D264B]">
+            Hey IB Folks! Unsure about the quality of your <br /> answers?{" "}
+            <span className="text-[#6947BF]">We get you.</span>
           </h1>
           <FileUploadAndForm />
         </div>
-        <div className="hidden lg:mt-0 lg:col-span-5 lg:flex">
-          <Image src="/robot.png" alt="Robot" width="344" height="626" />
+        <div className="">
+          <Image
+            src="/robot.png"
+            alt="Robot"
+            width={344}
+            height={626}
+            className="object-contain object-bottom "
+          />
         </div>
       </div>
     </section>
