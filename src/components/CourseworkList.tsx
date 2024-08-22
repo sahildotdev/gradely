@@ -1,59 +1,38 @@
 "use client";
-import FeatureCard from "./FeatureCard";
+import React from "react";
+import useEssayEvaluationStore from "@/store/essayEvaluationStore";
+import CourseworkItem from "./CourseworkItem";
 
-export default function CourseworkList() {
-  return (
-    <div className="flex flex-col content-center">
-      <div className="mt-10 flex flex-row justify-around content-center">
-        <FeatureCard
-          imageSrc="./paper.png"
-          imageAlt="Document preview"
-          title="How does the temperature of a Copp..."
-          description="How does the temperature of a Copper pipe affect the time it takes a magnet t..."
-          chips={[
-            {
-              label: "Avatar Chip",
-              avatar: {
-                src: "./avatar.svg",
-                fallback: "A",
-                alt: "Physics HL",
-              },
-            },
-            {
-              label: "18 min read",
-              avatar: {
-                src: "./clock.png",
-                alt: "Physics HL",
-                fallback: "HL",
-              },
-            },
-            {
-              label: "2388 words",
-              avatar: {
-                src: "./paper3d.png",
-                alt: "Physics HL",
-                fallback: "HL",
-              },
-            },
-            {
-              label: "7/7",
-              avatar: {
-                src: "./star.png",
-                alt: "Physics HL",
-                fallback: "HL",
-              },
-            },
-            {
-              label: "English",
-              avatar: {
-                src: "./HandGesture.png",
-                alt: "Physics HL",
-                fallback: "HL",
-              },
-            },
-          ]}
-        />
+const CourseworkList: React.FC = () => {
+  const { courseworkList } = useEssayEvaluationStore();
+
+  if (courseworkList.length === 0) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-gray-500">No coursework uploaded yet.</p>
       </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {courseworkList.map((coursework) => {
+        console.log("thumbnailUrl:", coursework.thumbnailUrl);
+        return (
+          <CourseworkItem
+            key={coursework.id}
+            title={coursework.title}
+            subject={coursework.subject}
+            readTime={`${Math.ceil(coursework.wordCount / 200)} min read`}
+            wordCount={coursework.wordCount}
+            rating={coursework.rating}
+            language={coursework.language}
+            thumbnailUrl={coursework.thumbnailUrl}
+          />
+        );
+      })}
     </div>
   );
-}
+};
+
+export default CourseworkList;

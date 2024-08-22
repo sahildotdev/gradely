@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
-import Header from "@/components/section/Header";
-import Coursework from "@/components/section/CourseWork";
-import ExploreCoursework from "@/components/section/ExploreCoursework";
+import React from "react";
+import Header from "@/components/Header";
+import ExploreCoursework from "@/components/ExploreCoursework";
 import { Calendar, Files } from "lucide-react";
 import {
   Tooltip,
@@ -12,6 +11,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import Chip from "@/components/Chip";
+import CourseworkList from "@/components/CourseworkList";
 
 export default function Home() {
   return (
@@ -62,8 +62,14 @@ export default function Home() {
       </div>
       <div className="pt-[10rem] ">
         <Header />
-        <Coursework />
-        <ExploreCoursework />
+        <div>
+          <h2 className="text-2xl font-semibold mb-4">My Coursework</h2>
+          <CourseworkList />
+        </div>
+        <div className="mt-8">
+          <h2 className="text-2xl font-semibold mb-4">Explore Coursework</h2>
+          <ExploreCoursework />
+        </div>
       </div>
     </main>
   );

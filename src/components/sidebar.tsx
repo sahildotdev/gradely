@@ -122,7 +122,7 @@ const Sidebar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="fixed left-3 top-3 z-1">
+    <div className="fixed left-3 top-3 z-50">
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetTrigger asChild>
           <Button
