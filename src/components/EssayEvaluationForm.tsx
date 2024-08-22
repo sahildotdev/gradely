@@ -106,7 +106,6 @@ const EssayEvaluationForm: React.FC = () => {
               name="pdfFile"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Upload PDF</FormLabel>
                   <FormControl>
                     <PDFUploader
                       onFileUpload={(files) => {
