@@ -54,7 +54,7 @@ export default function FileUploadAndForm() {
   return (
     <div className="bg-[#FCFBFD] rounded-3xl border-[1px] p-5">
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 ">
           <div className="bg-white content-center justify-center ">
             <FormControl>
               <>

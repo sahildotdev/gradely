@@ -66,7 +66,7 @@ const SidebarContent: React.FC = () => {
       <div className="flex flex-col space-y-4 w-full px-2">
         <TooltipProvider delayDuration={0}>
           <Tooltip>
-            <TooltipTrigger asChild>
+            <TooltipTrigger>
               <SidebarButton href="">
                 <LayoutDashboard className="h-6 w-6" />
                 <span className="ml-2 block md:hidden">Home</span>
