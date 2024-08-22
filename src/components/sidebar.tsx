@@ -84,9 +84,6 @@ const SidebarContent: React.FC = () => {
                 <span className="ml-2 block md:hidden">Book</span>
               </SidebarButton>
             </TooltipTrigger>
-            <TooltipContent>
-              <p>Book</p>
-            </TooltipContent>
           </Tooltip>
 
           <Tooltip>
@@ -96,9 +93,6 @@ const SidebarContent: React.FC = () => {
                 <span className="ml-2 block md:hidden">copy</span>
               </SidebarButton>
             </TooltipTrigger>
-            <TooltipContent>
-              <p>copy</p>
-            </TooltipContent>
           </Tooltip>
 
           <Tooltip>
@@ -108,9 +102,6 @@ const SidebarContent: React.FC = () => {
                 <span className="ml-2 block md:hidden">FileQuestion</span>
               </SidebarButton>
             </TooltipTrigger>
-            <TooltipContent>
-              <p>FileQuestion</p>
-            </TooltipContent>
           </Tooltip>
         </TooltipProvider>
       </div>
@@ -122,7 +113,7 @@ const Sidebar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="fixed left-3 top-3 z-50">
+    <div className="md:fixed left-3 top-3 z-50">
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetTrigger asChild>
           <Button

@@ -1,8 +1,6 @@
 "use client";
 import React from "react";
-import { Clock, Book, Star } from "lucide-react";
 import Chip from "./Chip";
-import Image from "next/image";
 
 interface CourseworkItemProps {
   title: string;
@@ -24,20 +22,20 @@ const CourseworkItem: React.FC<CourseworkItemProps> = ({
   thumbnailUrl,
 }) => {
   return (
-    <div className="flex flex-row items-start p-6 bg-gradient-to-r from-purple-100 to-white rounded-lg shadow-lg max-w-full w-[460px]">
+    <div className="flex flex-col md:flex-row items-start p-6 bg-gradient-to-r from-purple-100 to-white rounded-lg shadow-lg w-[460px]">
       {/* Image Section */}
-      <div className="bg-white relative w-[120px] h-[160px] p-1 rounded-lg rounded-bl-lg border border-gray-300 overflow-hidden">
-        <Image
-          src={thumbnailUrl}
+      <div className="bg-white relative w-full md:w-[120px] h-[250px] md:h-[160px] p-1 rounded-lg rounded-bl-lg border border-gray-300 overflow-hidden">
+        <img
+          src={thumbnailUrl || "/path/to/placeholder.png"}
           width={300}
           height={500}
           alt={`Cover for ${title}`}
-          className="w-full h-full object-fill"
+          className="w-full h-full  object-fill"
         />
       </div>
 
       {/* Content Section */}
-      <div className="flex-1 pl-4">
+      <div className="flex-1 p-4">
         <h2 className="text-lg font-Mont font-extrabold leading-6 text-gray-800">
           {title}
         </h2>

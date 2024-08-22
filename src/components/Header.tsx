@@ -9,16 +9,16 @@ import { useEssayEvaluationStore } from "@/store";
 export default function Header() {
   const { isEvaluationRequested } = useEssayEvaluationStore();
   return (
-    <div className="flex flex-row gap-5 ">
+    <div className="flex flex-col md:flex-row justify-center content-center px-10 gap-5">
       <div className="flex flex-col gap-4 ">
-        <h1 className="font-Mont text-[2.5rem] font-bold text-[#2D264B]">
+        <h1 className="font-Mont text-3xl leading-10 font-extrabold text-[#2D264B]">
           Hey IB Folks! Unsure about the quality of your <br /> answers?{" "}
           <span className="text-[#6947BF]">We get you.</span>
         </h1>
         <EssayEvaluationForm />
         {isEvaluationRequested && <EvaluationDisplay />}
       </div>
-      <div className="flex">
+      <div className="hidden lg:flex">
         <Image
           src="/robot.png"
           alt="Robot"

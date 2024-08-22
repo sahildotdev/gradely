@@ -15,7 +15,7 @@ const CourseworkList: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-row md:flex-wrap gap-5">
       {courseworkList.map((coursework) => {
         console.log("thumbnailUrl:", coursework.thumbnailUrl);
         return (
