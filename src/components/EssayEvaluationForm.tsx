@@ -4,6 +4,7 @@ import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 import {
   Form,
   FormControl,
@@ -67,13 +68,15 @@ const EssayEvaluationForm: React.FC = () => {
     setCourseworkType(values.courseworkType);
     setSubject(values.subject);
     setEssayTitle(values.essayTitle);
-    setPdfFileMetadata(
-      values.pdfFile.map((file) => ({
-        name: file.name,
-        size: file.size,
-        type: file.type,
-      }))
-    );
+
+    const selectedFile = values.pdfFile[0];
+
+    setPdfFileMetadata({
+      name: selectedFile.name,
+      size: selectedFile.size,
+      type: selectedFile.type,
+      file: selectedFile,
+    });
 
     setIsLoading(true);
     setIsEvaluationRequested(true);
@@ -88,6 +91,7 @@ const EssayEvaluationForm: React.FC = () => {
         name: values.pdfFile[0].name,
         size: values.pdfFile[0].size,
         type: values.pdfFile[0].type,
+        file: selectedFile,
       },
       language: "English", // Assuming English for now
       thumbnailUrl: thumbnailUrl || "/path/to/default/thumbnail.png",
@@ -122,7 +126,7 @@ const EssayEvaluationForm: React.FC = () => {
                     </p>
                   )}
                   {thumbnailUrl && (
-                    <img
+                    <Image
                       src={thumbnailUrl}
                       alt="PDF thumbnail"
                       className="mt-2 max-w-xs"

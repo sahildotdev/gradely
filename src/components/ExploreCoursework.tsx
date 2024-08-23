@@ -4,7 +4,7 @@ import CourseworkList from "./CourseworkList";
 
 const ExploreCoursework: React.FC = () => {
   return (
-    <section className="flex flex-row md:flex-col px-10 justify-start gap-5">
+    <div className="container">
       <h2 className="text-2xl font-semibold mb-3">Explore Coursework</h2>
       <Tabs className="flex flex-col justify-start gap-5">
         <TabsList className="flex justify-start">
@@ -15,9 +15,7 @@ const ExploreCoursework: React.FC = () => {
         </TabsList>
 
         <TabsContent value="all">
-          <div>
-            <CourseworkList />
-          </div>
+          <CourseworkList />
         </TabsContent>
         <TabsContent value="example">
           <div>
@@ -25,7 +23,7 @@ const ExploreCoursework: React.FC = () => {
           </div>
         </TabsContent>
       </Tabs>
-    </section>
+    </div>
   );
 };
 

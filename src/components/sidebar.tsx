@@ -53,7 +53,7 @@ function SidebarButton({
 const SidebarContent: React.FC = () => {
   return (
     <>
-      <div className="flex flex-row items-center p-2">
+      <div className="flex items-center p-2">
         <Image
           src="/ZUAILogo.png"
           width={48}
@@ -72,9 +72,6 @@ const SidebarContent: React.FC = () => {
                 <span className="ml-2 block md:hidden">Home</span>
               </SidebarButton>
             </TooltipTrigger>
-            <TooltipContent>
-              <p>Home</p>
-            </TooltipContent>
           </Tooltip>
 
           <Tooltip>
@@ -125,12 +122,12 @@ const Sidebar: React.FC = () => {
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className="w-[300px] sm:w-[400px] p-0">
-          <div className="h-full flex flex-col justify-between py-4">
+          <div className="h-full flex flex-col md:justify-between content-center py-4">
             <SidebarContent />
           </div>
         </SheetContent>
       </Sheet>
-      <div className="justify-between hidden md:flex rounded-lg bg-white w-16 h-[97vh] flex-col items-center pb-4 transition-all duration-300 border-r border-slate-200 fixed z-10 ">
+      <div className="hidden md:flex  md:justify-between rounded-lg bg-white w-16 h-[97vh] flex-col items-center pb-4 transition-all duration-300 border-r border-slate-200 fixed z-10 ">
         <div>
           <SidebarContent />
         </div>

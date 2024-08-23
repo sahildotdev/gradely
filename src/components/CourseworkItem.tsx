@@ -46,7 +46,7 @@ const CourseworkItem: React.FC<CourseworkItemProps> = ({
           <Chip
             label={`${wordCount} words`}
             avatar={{
-              src: "./paper3d.png",
+              src: "/paper3d.png",
               alt: "Physics HL",
               fallback: "HL",
             }}
@@ -54,21 +54,21 @@ const CourseworkItem: React.FC<CourseworkItemProps> = ({
           <Chip
             label={readTime}
             avatar={{
-              src: "./clock.png",
+              src: "/clock.png",
               fallback: "Clock",
             }}
           />
           <Chip
             label={`${rating}/7`}
             avatar={{
-              src: "./star.png",
+              src: "/star.png",
               fallback: "Star",
             }}
           />
           <Chip
             label={language}
             avatar={{
-              src: "./HandGesture.png",
+              src: "/HandGesture.png",
               alt: "Physics HL",
               fallback: "HL",
             }}
