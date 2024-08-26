@@ -49,10 +49,7 @@ interface EssayEvaluationState {
   setIsLoading: (isLoading: boolean) => void;
   setIsEvaluationRequested: (isRequested: boolean) => void;
   addCoursework: (
-    coursework: Omit<
-      Coursework,
-      "id" | "uploadDate" | "rating" | "thumbnailUrl"
-    >
+    coursework: Omit<Coursework, "id" | "uploadDate" | "rating">
   ) => void;
   resetEvaluation: () => void;
 }
@@ -107,7 +104,7 @@ const useEssayEvaluationStore = create<EssayEvaluationState>()(
               ...coursework,
               id: Date.now().toString(),
               uploadDate: new Date().toISOString(),
-              rating: 0,
+              rating: Math.floor(Math.random() * 5) + 1,
               thumbnailUrl,
             },
           ],

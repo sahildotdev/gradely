@@ -4,6 +4,7 @@ import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 import {
   Form,
   FormControl,
@@ -67,29 +68,31 @@ const EssayEvaluationForm: React.FC = () => {
     setCourseworkType(values.courseworkType);
     setSubject(values.subject);
     setEssayTitle(values.essayTitle);
-    setPdfFileMetadata(
-      values.pdfFile.map((file) => ({
-        name: file.name,
-        size: file.size,
-        type: file.type,
-      }))
-    );
+
+    const selectedFile = values.pdfFile[0];
+
+    setPdfFileMetadata({
+      name: selectedFile.name,
+      size: selectedFile.size,
+      type: selectedFile.type,
+      file: selectedFile,
+    });
 
     setIsLoading(true);
     setIsEvaluationRequested(true);
 
-    // Add coursework to the store
     addCoursework({
       title: values.essayTitle,
       subject: values.subject,
       type: values.courseworkType,
-      wordCount: Math.floor(Math.random() * 1000) + 500, // Random word count for demonstration
+      wordCount: Math.floor(Math.random() * 1000) + 500,
       fileMetadata: {
         name: values.pdfFile[0].name,
         size: values.pdfFile[0].size,
         type: values.pdfFile[0].type,
+        file: selectedFile,
       },
-      language: "English", // Assuming English for now
+      language: "English",
       thumbnailUrl: thumbnailUrl || "/path/to/default/thumbnail.png",
     });
 
@@ -98,7 +101,7 @@ const EssayEvaluationForm: React.FC = () => {
   };
 
   return (
-    <div className="bg-[#FCFBFD] rounded-3xl border-[1px] p-5">
+    <div className="bg-[#FCFBFD] rounded-3xl border-[1px] p-5 md:p-6 lg:p-8">
       <FormProvider {...form}>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -117,112 +120,115 @@ const EssayEvaluationForm: React.FC = () => {
                     />
                   </FormControl>
                   {thumbnailError && (
-                    <p className="text-red-500">
+                    <p className="text-red-500 text-sm mt-2">
                       Failed to generate thumbnail: {thumbnailError}
                     </p>
                   )}
                   {thumbnailUrl && (
-                    <img
+                    <Image
                       src={thumbnailUrl}
                       alt="PDF thumbnail"
-                      className="mt-2 max-w-xs"
+                      className="mt-2 max-w-full h-auto"
                     />
                   )}
                 </FormItem>
               )}
             />
 
-            <div className="flex flex-col mb-2">
-              <Label
-                className="mb-2 text-sm font-semibold"
-                htmlFor="courseworkType"
-              >
-                Select your course & subjects*
-              </Label>
-              <div className="flex gap-5">
-                <FormField
-                  control={form.control}
-                  name="courseworkType"
-                  render={({ field }) => (
-                    <FormItem className="flex-1">
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger
-                            className="border-[1px] rounded-3xl"
-                            id="courseworkType"
-                          >
-                            <SelectValue placeholder="Coursework Type" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent position="popper">
-                          <SelectItem value="essay">Essay</SelectItem>
-                          <SelectItem value="research_paper">
-                            Research Paper
-                          </SelectItem>
-                          <SelectItem value="case_study">Case Study</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      {form.formState.errors.courseworkType && (
-                        <p className="text-red-500">
-                          {form.formState.errors.courseworkType.message}
-                        </p>
-                      )}
-                    </FormItem>
-                  )}
-                />
+            <div className="flex flex-col md:flex-row md:gap-4 mb-2">
+              <FormField
+                control={form.control}
+                name="courseworkType"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel
+                      htmlFor="courseworkType"
+                      className="text-sm font-semibold mb-2"
+                    >
+                      Coursework Type*
+                    </FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger
+                          className="border-[1px] rounded-3xl"
+                          id="courseworkType"
+                        >
+                          <SelectValue placeholder="Coursework Type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent position="popper">
+                        <SelectItem value="essay">Essay</SelectItem>
+                        <SelectItem value="research_paper">
+                          Research Paper
+                        </SelectItem>
+                        <SelectItem value="case_study">Case Study</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    {form.formState.errors.courseworkType && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {form.formState.errors.courseworkType.message}
+                      </p>
+                    )}
+                  </FormItem>
+                )}
+              />
 
-                <FormField
-                  control={form.control}
-                  name="subject"
-                  render={({ field }) => (
-                    <FormItem className="flex-1">
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger
-                            className="border-[1px] rounded-3xl"
-                            id="subject"
-                          >
-                            <SelectValue placeholder="Subject" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent position="popper">
-                          <SelectItem value="english">English</SelectItem>
-                          <SelectItem value="history">History</SelectItem>
-                          <SelectItem value="science">Science</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      {form.formState.errors.subject && (
-                        <p className="text-red-500">
-                          {form.formState.errors.subject.message}
-                        </p>
-                      )}
-                    </FormItem>
-                  )}
-                />
-              </div>
+              <FormField
+                control={form.control}
+                name="subject"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel
+                      htmlFor="subject"
+                      className="text-sm font-semibold mb-2"
+                    >
+                      Subject*
+                    </FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger
+                          className="border-[1px] rounded-3xl"
+                          id="subject"
+                        >
+                          <SelectValue placeholder="Subject" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent position="popper">
+                        <SelectItem value="english">English</SelectItem>
+                        <SelectItem value="history">History</SelectItem>
+                        <SelectItem value="science">Science</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    {form.formState.errors.subject && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {form.formState.errors.subject.message}
+                      </p>
+                    )}
+                  </FormItem>
+                )}
+              />
             </div>
 
             <FormField
               control={form.control}
               name="essayTitle"
               render={({ field }) => (
-                <FormItem className="flex flex-col w-[30%]">
-                  <FormLabel className="mb-2">Enter your essay title</FormLabel>
+                <FormItem>
+                  <FormLabel
+                    htmlFor="essayTitle"
+                    className="text-sm font-semibold mb-2"
+                  >
+                    Essay Title*
+                  </FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Enter your essay title"
                       {...field}
-                      className="rounded-3xl"
+                      className="rounded-3xl w-full"
                     />
                   </FormControl>
                   {form.formState.errors.essayTitle && (
-                    <p className="text-red-500">
+                    <p className="text-red-500 text-sm mt-1">
                       {form.formState.errors.essayTitle.message}
                     </p>
                   )}
@@ -233,7 +239,7 @@ const EssayEvaluationForm: React.FC = () => {
             <Button
               type="submit"
               variant="default"
-              className="font-Mont rounded-3xl mt-4 bg-[#ADB8C9]"
+              className="font-Mont rounded-3xl mt-4 bg-[#ADB8C9] w-full sm:w-auto"
               disabled={isLoading}
             >
               {isLoading ? "Evaluating..." : "Evaluate your Score"}
