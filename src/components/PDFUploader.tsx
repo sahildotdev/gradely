@@ -27,29 +27,32 @@ const PDFUploader: React.FC<PDFUploaderProps> = ({
     setFiles(value);
   }, [value]);
 
-  const handleFiles = (newFiles: File[]) => {
-    const validFiles = newFiles.filter((file) => {
-      if (file.type !== "application/pdf") {
-        setError("Only PDF files are allowed.");
-        return false;
-      }
-      if (file.size > MAX_FILE_SIZE) {
-        setError("File size exceeds the limit of 25 MB.");
-        return false;
-      }
-      return true;
-    });
+  const handleFiles = useCallback(
+    (newFiles: File[]) => {
+      const validFiles = newFiles.filter((file) => {
+        if (file.type !== "application/pdf") {
+          setError("Only PDF files are allowed.");
+          return false;
+        }
+        if (file.size > MAX_FILE_SIZE) {
+          setError("File size exceeds the limit of 25 MB.");
+          return false;
+        }
+        return true;
+      });
 
-    setFiles((prevFiles) => {
-      const updatedFiles = [...prevFiles, ...validFiles];
-      onFileUpload(updatedFiles);
-      return updatedFiles;
-    });
+      setFiles((prevFiles) => {
+        const updatedFiles = [...prevFiles, ...validFiles];
+        onFileUpload(updatedFiles);
+        return updatedFiles;
+      });
 
-    if (validFiles.length > 0) {
-      setError(null);
-    }
-  };
+      if (validFiles.length > 0) {
+        setError(null);
+      }
+    },
+    [onFileUpload]
+  );
 
   const onDrop = useCallback(
     (acceptedFiles: File[], fileRejections: FileRejection[]) => {
@@ -59,7 +62,7 @@ const PDFUploader: React.FC<PDFUploaderProps> = ({
         setError(fileRejections[0].errors[0].message);
       }
     },
-    []
+    [handleFiles]
   );
 
   const dropzoneOptions: DropzoneOptions = {

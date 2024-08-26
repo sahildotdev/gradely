@@ -9,8 +9,8 @@ import { useEssayEvaluationStore } from "@/store";
 export default function Header() {
   const { isEvaluationRequested } = useEssayEvaluationStore();
   return (
-    <div className="flex flex-col md:flex-row justify-center content-center gap-5">
-      <div className="flex flex-col gap-5 ">
+    <div className="flex flex-col md:flex-row content-center gap-5">
+      <div className="flex flex-col gap-5 justify-between">
         <h1 className="font-Mont text-3xl leading-10 font-extrabold text-[#2D264B]">
           Hey IB Folks! Unsure about the quality of your <br /> answers?{" "}
           <span className="text-[#6947BF]">We get you.</span>
