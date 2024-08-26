@@ -3,7 +3,7 @@ import React, { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { LayoutDashboard, Files, Book, FileQuestion, Menu } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -92,6 +92,15 @@ const Sidebar: React.FC = () => {
 
   return (
     <div className="md:fixed left-3 top-3 z-50">
+      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+        <SheetContent side="left" className="w-[300px] sm:w-[400px] p-0">
+          <div className="h-full flex flex-col md:justify-between content-center py-4">
+            <SidebarContent />
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {/* Mobile Header */}
       <div className="md:hidden fixed top-0 left-0 w-full flex items-center justify-between px-4 py-2 bg-white border-b border-slate-200 z-40">
         <div className="flex items-center">
           <Image
@@ -111,15 +120,17 @@ const Sidebar: React.FC = () => {
           <Menu className="h-6 w-6" />
         </Button>
       </div>
-      <Sheet open={isOpen} onOpenChange={setIsOpen}>
-        <SheetContent side="left" className="w-[300px] sm:w-[400px] p-0">
-          <div className="h-full flex flex-col md:justify-between content-center py-4">
-            <SidebarContent />
-          </div>
-        </SheetContent>
-      </Sheet>
+
+      {/* Desktop Sidebar */}
       <div className="hidden md:flex md:justify-between rounded-lg bg-white w-16 h-[97vh] flex-col items-center pb-4 transition-all duration-300 border-r border-slate-200 fixed z-10">
-        <div>
+        <div className="flex flex-col items-center pt-4">
+          <Image
+            src="/ZUAILogo.png"
+            width={48}
+            height={48}
+            alt="zuai"
+            className="w-12 h-auto rounded-md mb-4"
+          />
           <SidebarContent />
         </div>
         <div className="flex flex-col space-y-4 w-full px-2">

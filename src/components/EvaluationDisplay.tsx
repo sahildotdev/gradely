@@ -56,7 +56,7 @@ const EvaluationDisplay: React.FC = () => {
 
   return (
     <Dialog open={isEvaluationRequested} onOpenChange={closeModal}>
-      <DialogContent>
+      <DialogContent className="p-4 max-w-xs sm:max-w-sm md:max-w-md mx-auto rounded-lg">
         <DialogHeader>
           <DialogTitle>Evaluation Results</DialogTitle>
         </DialogHeader>

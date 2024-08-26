@@ -53,7 +53,7 @@ export default function Home() {
         </TooltipProvider>
       </div>
 
-      <div className=" container max-w-7xl mx-auto flex flex-col gap-5">
+      <div className="container max-w-7xl mx-auto flex flex-col gap-5">
         <Header />
         <div className="flex flex-col">
           <h2 className="text-xl md:text-2xl font-semibold py-5 text-center md:text-left">
