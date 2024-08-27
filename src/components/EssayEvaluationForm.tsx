@@ -235,15 +235,16 @@ const EssayEvaluationForm: React.FC = () => {
                 </FormItem>
               )}
             />
-
-            <Button
-              type="submit"
-              variant="default"
-              className="font-Mont rounded-3xl mt-4 bg-[#ADB8C9] w-full sm:w-auto"
-              disabled={isLoading}
-            >
-              {isLoading ? "Evaluating..." : "Evaluate your Score"}
-            </Button>
+            <a className="cursor-pointer">
+              <Button
+                type="submit"
+                variant="default"
+                className="font-Mont rounded-3xl mt-4 bg-[#ADB8C9] w-full sm:w-auto"
+                disabled={isLoading}
+              >
+                {isLoading ? "Evaluating..." : "Evaluate your Score"}
+              </Button>
+            </a>
           </form>
         </Form>
       </FormProvider>

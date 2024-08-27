@@ -1,12 +1,12 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 // Define your interfaces
 interface FileMetadata {
   name: string;
   size: number;
   type: string;
-  file: File; // Store the actual file
+  file: File | null; // Store the actual file, but it will be null in persisted state
 }
 
 interface EvaluationResult {
@@ -30,13 +30,14 @@ interface Coursework {
   rating: number;
   language: string;
   thumbnailUrl: string;
+  evaluationResult: EvaluationResult | null;
 }
 
 interface EssayEvaluationState {
   courseworkType: string;
   subject: string;
   essayTitle: string;
-  pdfFileMetadata: FileMetadata | null; // Single file metadata instead of an array
+  pdfFileMetadata: FileMetadata | null;
   evaluationResult: EvaluationResult | null;
   isLoading: boolean;
   isEvaluationRequested: boolean;
@@ -49,8 +50,12 @@ interface EssayEvaluationState {
   setIsLoading: (isLoading: boolean) => void;
   setIsEvaluationRequested: (isRequested: boolean) => void;
   addCoursework: (
-    coursework: Omit<Coursework, "id" | "uploadDate" | "rating">
+    coursework: Omit<
+      Coursework,
+      "id" | "uploadDate" | "rating" | "evaluationResult"
+    >
   ) => void;
+  evaluateCoursework: (courseworkId: string) => Promise<void>;
   resetEvaluation: () => void;
 }
 
@@ -68,7 +73,7 @@ const generateThumbnail = async (pdfFile: File): Promise<string> => {
 
 const useEssayEvaluationStore = create<EssayEvaluationState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       courseworkType: "",
       subject: "",
       essayTitle: "",
@@ -87,28 +92,57 @@ const useEssayEvaluationStore = create<EssayEvaluationState>()(
         set({ isEvaluationRequested: isRequested }),
 
       addCoursework: async (coursework) => {
-        const pdfFileMetadata =
-          useEssayEvaluationStore.getState().pdfFileMetadata;
+        const pdfFileMetadata = get().pdfFileMetadata;
 
-        if (!pdfFileMetadata) {
+        if (!pdfFileMetadata || !pdfFileMetadata.file) {
           console.error("No PDF file metadata available.");
           return;
         }
 
-        const thumbnailUrl = await generateThumbnail(pdfFileMetadata.file);
+        generateThumbnail(pdfFileMetadata.file).then((thumbnailUrl) => {
+          set((state) => ({
+            courseworkList: [
+              ...state.courseworkList,
+              {
+                ...coursework,
+                id: Date.now().toString(),
+                uploadDate: new Date().toISOString(),
+                rating: 0,
+                thumbnailUrl,
+                evaluationResult: null,
+              },
+            ],
+          }));
+        });
+      },
 
-        set((state) => ({
-          courseworkList: [
-            ...state.courseworkList,
-            {
-              ...coursework,
-              id: Date.now().toString(),
-              uploadDate: new Date().toISOString(),
-              rating: Math.floor(Math.random() * 5) + 1,
-              thumbnailUrl,
+      evaluateCoursework: async (courseworkId: string) => {
+        set({ isLoading: true });
+
+        setTimeout(() => {
+          const evaluationResult: EvaluationResult = {
+            overallScore: Math.floor(Math.random() * 41) + 60,
+            criteriaScores: {
+              A: Math.floor(Math.random() * 41) + 60,
+              B: Math.floor(Math.random() * 41) + 60,
+              C: Math.floor(Math.random() * 41) + 60,
             },
-          ],
-        }));
+            evaluationDate: new Date().toISOString(),
+          };
+
+          set((state) => ({
+            courseworkList: state.courseworkList.map((item) =>
+              item.id === courseworkId
+                ? {
+                    ...item,
+                    evaluationResult,
+                    rating: Math.floor(evaluationResult.overallScore / 20) + 1,
+                  }
+                : item
+            ),
+            isLoading: false,
+          }));
+        }, 1500);
       },
 
       resetEvaluation: () =>
@@ -120,6 +154,17 @@ const useEssayEvaluationStore = create<EssayEvaluationState>()(
     }),
     {
       name: "essay-evaluation-storage",
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({
+        ...state,
+        pdfFileMetadata: state.pdfFileMetadata
+          ? { ...state.pdfFileMetadata, file: null }
+          : null,
+        courseworkList: state.courseworkList.map((item) => ({
+          ...item,
+          fileMetadata: { ...item.fileMetadata, file: null },
+        })),
+      }),
     }
   )
 );

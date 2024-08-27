@@ -10,6 +10,12 @@ interface UploadedFile extends File {
   preview?: string;
 }
 
+interface FileMetadata {
+  name: string;
+  size: number;
+  type: string;
+}
+
 interface PDFUploaderProps {
   onFileUpload: (files: File[]) => void;
   value?: File[];
@@ -23,9 +29,22 @@ const PDFUploader: React.FC<PDFUploaderProps> = ({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Update files when value prop changes
-    setFiles(value);
-  }, [value]);
+    const storedMetadata = localStorage.getItem("fileMetadata");
+    if (storedMetadata) {
+      const parsedMetadata: FileMetadata[] = JSON.parse(storedMetadata);
+      setFiles((prevFiles) => {
+        // Retrieve files from URLs or other sources if needed
+        return parsedMetadata.map((metadata) => {
+          return {
+            name: metadata.name,
+            size: metadata.size,
+            type: metadata.type,
+            // file content needs to be retrieved separately
+          } as UploadedFile;
+        });
+      });
+    }
+  }, []);
 
   const handleFiles = useCallback(
     (newFiles: File[]) => {
@@ -35,97 +54,92 @@ const PDFUploader: React.FC<PDFUploaderProps> = ({
           return false;
         }
         if (file.size > MAX_FILE_SIZE) {
-          setError("File size exceeds the limit of 25 MB.");
+          setError("File size exceeds 25 MB.");
           return false;
         }
         return true;
       });
 
-      setFiles((prevFiles) => {
-        const updatedFiles = [...prevFiles, ...validFiles];
-        onFileUpload(updatedFiles);
-        return updatedFiles;
-      });
-
       if (validFiles.length > 0) {
-        setError(null);
+        // Store file metadata in localStorage
+        const fileMetadata = validFiles.map((file) => ({
+          name: file.name,
+          size: file.size,
+          type: file.type,
+        }));
+        localStorage.setItem("fileMetadata", JSON.stringify(fileMetadata));
+
+        setFiles((prevFiles) => [...prevFiles, ...validFiles]);
+        onFileUpload([...files, ...validFiles]);
       }
     },
-    [onFileUpload]
+    [files, onFileUpload]
   );
 
-  const onDrop = useCallback(
-    (acceptedFiles: File[], fileRejections: FileRejection[]) => {
-      handleFiles(acceptedFiles);
-
-      if (fileRejections.length > 0) {
-        setError(fileRejections[0].errors[0].message);
-      }
+  const { getRootProps, getInputProps } = useDropzone({
+    accept: {
+      "application/pdf": [".pdf"],
     },
-    [handleFiles]
-  );
-
-  const dropzoneOptions: DropzoneOptions = {
-    onDrop,
-    accept: { "application/pdf": [".pdf"] },
     maxSize: MAX_FILE_SIZE,
+    onDrop: (acceptedFiles) => handleFiles(acceptedFiles),
+    onDropRejected: (fileRejections: FileRejection[]) => {
+      setError(fileRejections[0]?.errors[0]?.message || "File upload error");
+    },
+  } as DropzoneOptions);
+
+  const handleRemoveFile = (fileToRemove: File) => {
+    setFiles((prevFiles) => {
+      const updatedFiles = prevFiles.filter((file) => file !== fileToRemove);
+      // Update localStorage
+      const updatedMetadata = updatedFiles.map((file) => ({
+        name: file.name,
+        size: file.size,
+        type: file.type,
+      }));
+      localStorage.setItem("fileMetadata", JSON.stringify(updatedMetadata));
+      onFileUpload(updatedFiles);
+      return updatedFiles;
+    });
   };
 
-  const { getRootProps, getInputProps, isDragActive } =
-    useDropzone(dropzoneOptions);
-
   return (
-    <div className="mx-auto">
+    <div>
       <div
-        {...getRootProps()}
-        className={`flex flex-col text-center border-dashed border-[1px] border-gray-300 rounded-lg p-10 ${
-          isDragActive ? "border-[#6947BF] bg-[#F8F6FE]" : ""
-        }`}
+        {...getRootProps({
+          className:
+            "border-dashed border-2 border-gray-300 p-10 rounded-md text-center cursor-pointer",
+        })}
       >
-        <input {...getInputProps()} id="file-upload" />
-        <div className="flex justify-center content-center">
-          <Upload className="size-12 text-[#98A1BB]" />
-        </div>
-        <label htmlFor="file-upload" className="cursor-pointer">
-          <div>
-            <p className="text-gray-400 font-Mont font-bold text-base">
-              {isDragActive ? "Drop the PDF here" : "Drag and drop a PDF"}
-            </p>
-            <p className="text-gray-400 font-Mont font-semibold text-base">
-              Limit 25 MB per file
-            </p>
-          </div>
-          <Button
-            type="button"
-            variant="outline"
-            className="mt-4 bg-white text-[#6947BF] border-[#CEC4EB] focus:outline-none font-extrabold text-base rounded-3xl border-[1px]"
-            onClick={(e) => e.preventDefault()}
-          >
-            Upload your file
-          </Button>
-        </label>
+        <input {...getInputProps()} />
+        <Upload className="w-8 h-8 mx-auto mb-2 text-gray-500" />
+        <p className="text-gray-600">
+          Drag and drop your PDF file here, or click to select one.
+        </p>
+        {error && (
+          <Alert variant="destructive" className="mt-4">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
       </div>
-
-      {error && (
-        <Alert variant="destructive" className="mt-4">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-
-      {files.length > 0 && (
-        <div className="mt-4">
-          <h3 className="text-lg font-semibold mb-2">Uploaded Files:</h3>
-          <ul className="list-disc pl-5">
-            {files.map((file, index) => (
-              <li key={index} className="text-sm text-gray-600">
-                {file.name} ({(file.size / 1024 / 1024).toFixed(2)} MB)
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <div className="mt-4">
+        {files.map((file) => (
+          <div
+            key={file.name}
+            className="flex items-center justify-between p-2 border rounded-md mb-2"
+          >
+            <span>{file.name}</span>
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={() => handleRemoveFile(file)}
+            >
+              Remove
+            </Button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
