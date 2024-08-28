@@ -29,7 +29,7 @@ interface Coursework {
   fileMetadata: FileMetadata;
   rating: number;
   language: string;
-  thumbnailUrl: string;
+  thumbnailUrl: string; // The thumbnail URL can be a placeholder
   evaluationResult: EvaluationResult | null;
 }
 
@@ -59,12 +59,12 @@ interface EssayEvaluationState {
   resetEvaluation: () => void;
 }
 
-// Function to generate a thumbnail from a PDF file
+// Function to generate a placeholder thumbnail
 const generateThumbnail = async (pdfFile: File): Promise<string> => {
   try {
-    // Replace this with your actual thumbnail generation logic
-    const thumbnailUrl = "/path/to/generated/thumbnail.png"; // Example placeholder
-    return thumbnailUrl;
+    // Placeholder thumbnail URL
+    const placeholderThumbnailUrl = "/path/to/placeholder.png"; // Replace with actual path if needed
+    return placeholderThumbnailUrl;
   } catch (error) {
     console.error("Failed to generate thumbnail:", error);
     return ""; // Return an empty string if thumbnail generation fails
@@ -99,21 +99,22 @@ const useEssayEvaluationStore = create<EssayEvaluationState>()(
           return;
         }
 
-        generateThumbnail(pdfFileMetadata.file).then((thumbnailUrl) => {
-          set((state) => ({
-            courseworkList: [
-              ...state.courseworkList,
-              {
-                ...coursework,
-                id: Date.now().toString(),
-                uploadDate: new Date().toISOString(),
-                rating: 0,
-                thumbnailUrl,
-                evaluationResult: null,
-              },
-            ],
-          }));
-        });
+        // Use placeholder for thumbnail URL
+        const thumbnailUrl = await generateThumbnail(pdfFileMetadata.file);
+
+        set((state) => ({
+          courseworkList: [
+            ...state.courseworkList,
+            {
+              ...coursework,
+              id: Date.now().toString(),
+              uploadDate: new Date().toISOString(),
+              rating: 0,
+              thumbnailUrl,
+              evaluationResult: null,
+            },
+          ],
+        }));
       },
 
       evaluateCoursework: async (courseworkId: string) => {

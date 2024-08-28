@@ -1,7 +1,9 @@
 "use client";
+
 import React from "react";
 import Image from "next/image";
 import Chip from "./Chip";
+import { usePDFThumbnail } from "@/hooks/usePDFThumbnail";
 
 interface CourseworkItemProps {
   title: string;
@@ -10,7 +12,8 @@ interface CourseworkItemProps {
   wordCount: number;
   rating: number;
   language: string;
-  thumbnailUrl: string;
+  file?: File;
+  thumbnailUrl?: string;
 }
 
 const CourseworkItem: React.FC<CourseworkItemProps> = ({
@@ -20,20 +23,22 @@ const CourseworkItem: React.FC<CourseworkItemProps> = ({
   wordCount,
   rating,
   language,
-  thumbnailUrl,
+  file,
 }) => {
+  const { thumbnailUrl, error } = usePDFThumbnail(file || null);
+
   return (
     <div className="flex flex-col md:flex-row items-center md:items-start p-4 md:p-6 bg-gradient-to-r from-purple-100 to-white rounded-lg shadow-lg w-full md:w-[460px]">
       <div className="bg-white relative w-full md:w-[120px] h-[200px] md:h-[160px] p-1 rounded-lg rounded-bl-lg border border-gray-300 overflow-hidden mb-4 md:mb-0">
         <Image
-          src={thumbnailUrl || "/path/to/placeholder.png"}
+          src={thumbnailUrl || "/path/to/placeholder.png"} // Ensure this path is correct or use a default image
           alt={`Cover for ${title}`}
           width={120}
           height={160}
           layout="responsive"
-          objectFit="cover"
           className="rounded-lg"
         />
+        {error && <p className="text-red-500">{error}</p>}
       </div>
 
       <div className="flex-1 md:ml-4">
