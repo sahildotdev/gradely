@@ -53,12 +53,12 @@ export default function Home() {
         </TooltipProvider>
       </div>
 
-      <div className="container max-w-7xl mx-auto flex flex-col gap-5">
+      <div className="flex flex-col gap-5">
         <Header />
         <div className="flex flex-col">
-          <h2 className="text-xl md:text-2xl font-semibold py-5 text-center md:text-left">
+          <h1 className="text-xl md:text-2xl font-semibold mb-3 text-left md:text-left">
             My Coursework
-          </h2>
+          </h1>
           <CourseworkList />
         </div>
         <ExploreCoursework />

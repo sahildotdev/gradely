@@ -28,15 +28,19 @@ const CourseworkItem: React.FC<CourseworkItemProps> = ({
   const { thumbnailUrl, error } = usePDFThumbnail(file || null);
 
   return (
-    <div className="flex flex-col md:flex-row items-center md:items-start p-4 md:p-6 bg-gradient-to-r from-purple-100 to-white rounded-lg shadow-lg w-full md:w-[460px]">
-      <div className="bg-white relative w-full md:w-[120px] h-[200px] md:h-[160px] p-1 rounded-lg rounded-bl-lg border border-gray-300 overflow-hidden mb-4 md:mb-0">
+    <div className="flex flex-col md:flex-row items-center md:items-start p-4 md:p-6 bg-gradient-to-r from-purple-100 to-white rounded-3xl shadow-lg w-full md:w-[460px]">
+      <div className="bg-white hidden relative w-full md:w-[120px] h-[200px] md:h-[160px] p-1 rounded-3xl border border-gray-300 overflow-hidden mb-4 md:mb-0">
         <Image
-          src={thumbnailUrl || "/path/to/placeholder.png"} // Ensure this path is correct or use a default image
-          alt={`Cover for ${title}`}
-          width={120}
-          height={160}
-          layout="responsive"
-          className="rounded-lg"
+          src={thumbnailUrl || "/images/placeholder.png"}
+          alt={`${title}`}
+          width={500}
+          height={100}
+          /*style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "fill",
+          }}*/
+          className="rounded-3xl"
         />
         {error && <p className="text-red-500">{error}</p>}
       </div>

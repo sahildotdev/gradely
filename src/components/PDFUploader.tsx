@@ -107,7 +107,7 @@ const PDFUploader: React.FC<PDFUploaderProps> = ({
       <div
         {...getRootProps({
           className:
-            "border-dashed border-2 border-gray-300 p-10 rounded-md text-center cursor-pointer",
+            "border-dashed border-2 border-gray-300 p-10 rounded-3xl text-center cursor-pointer",
         })}
       >
         <input {...getInputProps()} />

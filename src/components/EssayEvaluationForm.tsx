@@ -93,7 +93,7 @@ const EssayEvaluationForm: React.FC = () => {
         file: selectedFile,
       },
       language: "English",
-      thumbnailUrl: thumbnailUrl || "/path/to/default/thumbnail.png",
+      thumbnailUrl: thumbnailUrl || "/images/thumbnail.png",
     });
 
     await new Promise((resolve) => setTimeout(resolve, 2000));
