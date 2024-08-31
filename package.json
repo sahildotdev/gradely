@@ -24,6 +24,9 @@
     "clsx": "^2.1.1",
     "lucide-react": "^0.428.0",
     "next": "14.2.5",
+    "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^2.16.105",
+    "pdfjs-lib": "^0.0.149",
     "react": "^18",
     "react-dom": "^18",
     "react-dropzone": "^14.2.3",
@@ -36,6 +39,7 @@
   },
   "devDependencies": {
     "@types/node": "^20",
+    "@types/pdfjs-dist": "^2.10.378",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",

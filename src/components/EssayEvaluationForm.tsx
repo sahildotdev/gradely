@@ -93,7 +93,7 @@ const EssayEvaluationForm: React.FC = () => {
         file: selectedFile,
       },
       language: "English",
-      thumbnailUrl: thumbnailUrl || "/path/to/default/thumbnail.png",
+      thumbnailUrl: thumbnailUrl || "/images/thumbnail.png",
     });
 
     await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -235,15 +235,16 @@ const EssayEvaluationForm: React.FC = () => {
                 </FormItem>
               )}
             />
-
-            <Button
-              type="submit"
-              variant="default"
-              className="font-Mont rounded-3xl mt-4 bg-[#ADB8C9] w-full sm:w-auto"
-              disabled={isLoading}
-            >
-              {isLoading ? "Evaluating..." : "Evaluate your Score"}
-            </Button>
+            <a className="cursor-pointer">
+              <Button
+                type="submit"
+                variant="default"
+                className="font-Mont rounded-3xl mt-4 bg-[#ADB8C9] w-full sm:w-auto"
+                disabled={isLoading}
+              >
+                {isLoading ? "Evaluating..." : "Evaluate your Score"}
+              </Button>
+            </a>
           </form>
         </Form>
       </FormProvider>

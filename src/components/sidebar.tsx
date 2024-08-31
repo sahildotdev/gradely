@@ -44,7 +44,7 @@ function SidebarButton({
 const SidebarContent: React.FC = () => {
   return (
     <>
-      <div className="flex flex-col space-y-4 w-full px-2">
+      <div className=" flex flex-col gap-5 w-full p-8 items-start ">
         <TooltipProvider delayDuration={0}>
           <Tooltip>
             <TooltipTrigger>
@@ -122,7 +122,7 @@ const Sidebar: React.FC = () => {
       </div>
 
       {/* Desktop Sidebar */}
-      <div className="hidden md:flex md:justify-between rounded-lg bg-white w-16 h-[97vh] flex-col items-center pb-4 transition-all duration-300 border-r border-slate-200 fixed z-10">
+      <div className="hidden md:flex md:justify-between rounded-lg bg-white w-16 h-[97vh] flex-col items-center pb-4 transition-all duration-300 shadow-md fixed z-10">
         <div className="flex flex-col items-center pt-4">
           <Image
             src="/ZUAILogo.png"
