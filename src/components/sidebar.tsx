@@ -126,7 +126,7 @@ const Sidebar: React.FC = () => {
       </Sheet>
 
       {/* Mobile Header */}
-      <div className="md:hidden fixed top-0 left-0 w-full flex content-center items-center justify-between px-4 py-2 border-b border-slate-200 z-40">
+      <div className="md:hidden fixed top-0 left-0 w-full flex content-center items-center justify-between px-4 py-2 bg-white border-b border-slate-200 z-40">
         <LogoIcon width={36} height={36} />
 
         <Button
