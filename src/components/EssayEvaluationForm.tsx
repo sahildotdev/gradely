@@ -4,6 +4,8 @@ import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+
 import Image from "next/image";
 import {
   Form,
@@ -21,6 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
 import PDFUploader from "./PDFUploader";
 import useEssayEvaluationStore from "@/store/essayEvaluationStore";
 import { usePDFThumbnail } from "@/hooks/usePDFThumbnail";
@@ -242,7 +245,14 @@ const EssayEvaluationForm: React.FC = () => {
                 className="font-Mont rounded-3xl mt-4 bg-[#ADB8C9] w-full sm:w-auto"
                 disabled={isLoading}
               >
-                {isLoading ? "Evaluating..." : "Evaluate your Score"}
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Evaluating...
+                  </>
+                ) : (
+                  "Evaluate your Score"
+                )}
               </Button>
             </a>
           </form>

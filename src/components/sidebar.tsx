@@ -4,9 +4,8 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { LayoutDashboard, Files, Book, FileQuestion, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
 import {
   Tooltip,
   TooltipProvider,
@@ -15,6 +14,20 @@ import {
 
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
+
+import {
+  HomeIcon,
+  BookIcon,
+  FileIcon,
+  QuizIcon,
+  LogoIcon,
+} from "@/components/icons";
+
+/*import HomeIcon from "@/components/icons/HomeIcon";
+import BookIcon from "@/components/icons/BookIcon";
+import FileIcon from "@/components/icons/FileIcon";
+import QuizIcon from "@/components/icons/QuizIcon";
+import LogoIcon from "@/components/icons/LogoIcon";*/
 
 function SidebarButton({
   href,
@@ -44,12 +57,15 @@ function SidebarButton({
 const SidebarContent: React.FC = () => {
   return (
     <>
-      <div className=" flex flex-col gap-5 w-full p-8 items-start ">
+      <div className="flex flex-col gap-2 w-full p-5 md:p-0 items-start md:items-center ">
         <TooltipProvider delayDuration={0}>
           <Tooltip>
             <TooltipTrigger>
               <SidebarButton href="">
-                <LayoutDashboard className="h-6 w-6" />
+                <div className="flex justify-center items-center rounded-full size-[36px] bg-[#6947BF]">
+                  <HomeIcon />
+                </div>
+
                 <span className="ml-2 block md:hidden">Home</span>
               </SidebarButton>
             </TooltipTrigger>
@@ -58,7 +74,10 @@ const SidebarContent: React.FC = () => {
           <Tooltip>
             <TooltipTrigger>
               <SidebarButton href="">
-                <Book className="h-6 w-6" />
+                <div className="flex justify-center items-center rounded-full size-[36px] bg-[F8FAFC]">
+                  <BookIcon />
+                </div>
+
                 <span className="ml-2 block md:hidden">Book</span>
               </SidebarButton>
             </TooltipTrigger>
@@ -67,7 +86,10 @@ const SidebarContent: React.FC = () => {
           <Tooltip>
             <TooltipTrigger>
               <SidebarButton href="">
-                <Files className="h-6 w-6" />
+                <div className="flex justify-center items-center rounded-full size-[36px] bg-[F8FAFC]">
+                  <FileIcon />
+                </div>
+
                 <span className="ml-2 block md:hidden">copy</span>
               </SidebarButton>
             </TooltipTrigger>
@@ -76,7 +98,10 @@ const SidebarContent: React.FC = () => {
           <Tooltip>
             <TooltipTrigger>
               <SidebarButton href="">
-                <FileQuestion className="h-6 w-6" />
+                <div className="flex justify-center items-center rounded-full size-[36px] bg-[F8FAFC]">
+                  <QuizIcon />
+                </div>
+
                 <span className="ml-2 block md:hidden">FileQuestion</span>
               </SidebarButton>
             </TooltipTrigger>
@@ -101,16 +126,9 @@ const Sidebar: React.FC = () => {
       </Sheet>
 
       {/* Mobile Header */}
-      <div className="md:hidden fixed top-0 left-0 w-full flex items-center justify-between px-4 py-2 bg-white border-b border-slate-200 z-40">
-        <div className="flex items-center">
-          <Image
-            src="/ZUAILogo.png"
-            width={48}
-            height={48}
-            alt="zuai"
-            className="w-12 h-auto rounded-md"
-          />
-        </div>
+      <div className="md:hidden fixed top-0 left-0 w-full flex content-center items-center justify-between px-4 py-2 bg-red-400 border-b border-slate-200 z-40">
+        <LogoIcon width={36} height={36} />
+
         <Button
           variant="ghost"
           size="icon"
@@ -122,18 +140,12 @@ const Sidebar: React.FC = () => {
       </div>
 
       {/* Desktop Sidebar */}
-      <div className="hidden md:flex md:justify-between rounded-lg bg-white w-16 h-[97vh] flex-col items-center pb-4 transition-all duration-300 shadow-md fixed z-10">
-        <div className="flex flex-col items-center pt-4">
-          <Image
-            src="/ZUAILogo.png"
-            width={48}
-            height={48}
-            alt="zuai"
-            className="w-12 h-auto rounded-md mb-4"
-          />
+      <div className="hidden md:flex md:justify-between rounded-lg w-16 h-[97vh] flex-col items-center transition-all duration-300 shadow-md fixed pb-4 z-10">
+        <div className="flex flex-col gap-8 items-center pt-8">
+          <LogoIcon width={36} height={36} />
           <SidebarContent />
         </div>
-        <div className="flex flex-col space-y-4 w-full px-2">
+        <div className="flex">
           <Avatar>
             <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
             <AvatarFallback>CN</AvatarFallback>
