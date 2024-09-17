@@ -1,20 +1,12 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { useDropzone, FileRejection, DropzoneOptions } from "react-dropzone";
 import { AlertCircle, Upload } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { usePDFThumbnail } from "@/hooks/usePDFThumbnail";
+import Image from "next/image";
 
-const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25 MB in bytes
-
-interface UploadedFile extends File {
-  preview?: string;
-}
-
-interface FileMetadata {
-  name: string;
-  size: number;
-  type: string;
-}
+const MAX_FILE_SIZE = 25 * 1024 * 1024;
 
 interface PDFUploaderProps {
   onFileUpload: (files: File[]) => void;
@@ -25,26 +17,8 @@ const PDFUploader: React.FC<PDFUploaderProps> = ({
   onFileUpload,
   value = [],
 }) => {
-  const [files, setFiles] = useState<UploadedFile[]>(value);
+  const [files, setFiles] = useState<File[]>(value);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const storedMetadata = localStorage.getItem("fileMetadata");
-    if (storedMetadata) {
-      const parsedMetadata: FileMetadata[] = JSON.parse(storedMetadata);
-      setFiles((prevFiles) => {
-        // Retrieve files from URLs or other sources if needed
-        return parsedMetadata.map((metadata) => {
-          return {
-            name: metadata.name,
-            size: metadata.size,
-            type: metadata.type,
-            // file content needs to be retrieved separately
-          } as UploadedFile;
-        });
-      });
-    }
-  }, []);
 
   const handleFiles = useCallback(
     (newFiles: File[]) => {
@@ -61,25 +35,18 @@ const PDFUploader: React.FC<PDFUploaderProps> = ({
       });
 
       if (validFiles.length > 0) {
-        // Store file metadata in localStorage
-        const fileMetadata = validFiles.map((file) => ({
-          name: file.name,
-          size: file.size,
-          type: file.type,
-        }));
-        localStorage.setItem("fileMetadata", JSON.stringify(fileMetadata));
-
-        setFiles((prevFiles) => [...prevFiles, ...validFiles]);
-        onFileUpload([...files, ...validFiles]);
+        setFiles((prevFiles) => {
+          const updatedFiles = [...prevFiles, ...validFiles];
+          onFileUpload(updatedFiles);
+          return updatedFiles;
+        });
       }
     },
-    [files, onFileUpload]
+    [onFileUpload]
   );
 
   const { getRootProps, getInputProps } = useDropzone({
-    accept: {
-      "application/pdf": [".pdf"],
-    },
+    accept: { "application/pdf": [".pdf"] },
     maxSize: MAX_FILE_SIZE,
     onDrop: (acceptedFiles) => handleFiles(acceptedFiles),
     onDropRejected: (fileRejections: FileRejection[]) => {
@@ -90,13 +57,6 @@ const PDFUploader: React.FC<PDFUploaderProps> = ({
   const handleRemoveFile = (fileToRemove: File) => {
     setFiles((prevFiles) => {
       const updatedFiles = prevFiles.filter((file) => file !== fileToRemove);
-      // Update localStorage
-      const updatedMetadata = updatedFiles.map((file) => ({
-        name: file.name,
-        size: file.size,
-        type: file.type,
-      }));
-      localStorage.setItem("fileMetadata", JSON.stringify(updatedMetadata));
       onFileUpload(updatedFiles);
       return updatedFiles;
     });
@@ -125,21 +85,45 @@ const PDFUploader: React.FC<PDFUploaderProps> = ({
       </div>
       <div className="mt-4">
         {files.map((file) => (
-          <div
-            key={file.name}
-            className="flex items-center justify-between p-2 border rounded-md mb-2"
-          >
-            <span>{file.name}</span>
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={() => handleRemoveFile(file)}
-            >
-              Remove
-            </Button>
-          </div>
+          <FileItem key={file.name} file={file} onRemove={handleRemoveFile} />
         ))}
       </div>
+    </div>
+  );
+};
+
+const FileItem: React.FC<{ file: File; onRemove: (file: File) => void }> = ({
+  file,
+  onRemove,
+}) => {
+  const { thumbnailUrl, error } = usePDFThumbnail(file);
+
+  return (
+    <div className="flex items-center justify-between p-2 border rounded-md mb-2">
+      <div className="flex items-center space-x-4">
+        {!error && !thumbnailUrl && (
+          <div className="w-16 h-16 bg-gray-200 flex items-center justify-center">
+            <span>Thumbnail Loading...</span>
+          </div>
+        )}
+        {/*{thumbnailUrl && (
+          <Image
+            width={120}
+            height={160}
+            src={thumbnailUrl}
+            alt="PDF Thumbnail"
+            className="w-16 h-16 object-cover"
+          />
+        )}*/}
+        <span>{file.name}</span>
+      </div>
+      <Button
+        type="button"
+        variant="destructive"
+        onClick={() => onRemove(file)}
+      >
+        Remove
+      </Button>
     </div>
   );
 };

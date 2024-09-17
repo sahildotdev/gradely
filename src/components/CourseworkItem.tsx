@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import Chip from "./Chip";
 import { usePDFThumbnail } from "@/hooks/usePDFThumbnail";
+import PDFUploader from "./PDFUploader";
 
 interface CourseworkItemProps {
   title: string;
@@ -28,15 +29,17 @@ const CourseworkItem: React.FC<CourseworkItemProps> = ({
   const { thumbnailUrl, error } = usePDFThumbnail(file || null);
 
   return (
-    <div className="flex flex-col md:flex-row items-center md:items-start p-4 md:p-6 bg-gradient-to-r from-purple-100 to-white rounded-3xl shadow-lg w-full md:w-[460px]">
+    <div className="flex flex-col md:flex-row items-center md:items-start p-4 md:p-6 bg-gradient-to-r from-purple-100 to-white rounded-3xl shadow-lg w-full md:w-[420px]">
       <div className="bg-white hidden md:flex relative w-full md:w-[120px] h-[200px] md:h-[160px] p-1 rounded-3xl border border-gray-300 overflow-hidden mb-4 md:mb-0">
-        <Image
-          src={thumbnailUrl || "/images/placeholder.png"}
-          alt={`${title}`}
-          width={500}
-          height={100}
-          className="rounded-3xl"
-        />
+        {thumbnailUrl && (
+          <Image
+            width={120}
+            height={160}
+            src={thumbnailUrl}
+            alt="PDF thumbnail"
+            className="mt-2 max-w-full h-auto"
+          />
+        )}
         {error && <p className="text-red-500">{error}</p>}
       </div>
 

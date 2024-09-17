@@ -1,11 +1,11 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-
+import { motion, Variants } from "framer-motion";
 import Image from "next/image";
 import {
   Form,
@@ -36,6 +36,20 @@ const formSchema = z.object({
     .array(z.instanceof(File))
     .min(1, { message: "PDF file is required" }),
 });
+
+const buttonVariants: Variants = {
+  hover: { scale: 1.05 },
+  tap: { scale: 0.95 },
+};
+
+// Function to convert a file to base64 string
+const fileToBase64 = (file: File): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+  });
 
 const EssayEvaluationForm: React.FC = () => {
   const {
@@ -74,33 +88,42 @@ const EssayEvaluationForm: React.FC = () => {
 
     const selectedFile = values.pdfFile[0];
 
-    setPdfFileMetadata({
-      name: selectedFile.name,
-      size: selectedFile.size,
-      type: selectedFile.type,
-      file: selectedFile,
-    });
+    try {
+      const base64 = await fileToBase64(selectedFile);
 
-    setIsLoading(true);
-    setIsEvaluationRequested(true);
-
-    addCoursework({
-      title: values.essayTitle,
-      subject: values.subject,
-      type: values.courseworkType,
-      wordCount: Math.floor(Math.random() * 1000) + 500,
-      fileMetadata: {
-        name: values.pdfFile[0].name,
-        size: values.pdfFile[0].size,
-        type: values.pdfFile[0].type,
+      setPdfFileMetadata({
+        name: selectedFile.name,
+        size: selectedFile.size,
+        type: selectedFile.type,
         file: selectedFile,
-      },
-      language: "English",
-      thumbnailUrl: thumbnailUrl || "/images/thumbnail.png",
-    });
+        base64,
+      });
 
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    setIsLoading(false);
+      setIsLoading(true);
+      setIsEvaluationRequested(true);
+
+      addCoursework({
+        title: values.essayTitle,
+        subject: values.subject,
+        type: values.courseworkType,
+        wordCount: Math.floor(Math.random() * 1000) + 500,
+        fileMetadata: {
+          name: selectedFile.name,
+          size: selectedFile.size,
+          type: selectedFile.type,
+          file: selectedFile,
+          base64,
+        },
+        language: "English",
+        thumbnailUrl: thumbnailUrl || "/images/thumbnail.png",
+        file: undefined,
+      });
+
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Failed to convert file to base64", error);
+    }
   };
 
   return (
@@ -127,17 +150,20 @@ const EssayEvaluationForm: React.FC = () => {
                       Failed to generate thumbnail: {thumbnailError}
                     </p>
                   )}
-                  {thumbnailUrl && (
+                  {/*{thumbnailUrl && (
                     <Image
+                      width={120}
+                      height={160}
                       src={thumbnailUrl}
                       alt="PDF thumbnail"
                       className="mt-2 max-w-full h-auto"
                     />
-                  )}
+                  )}*/}
                 </FormItem>
               )}
             />
 
+            {/* Other form fields */}
             <div className="flex flex-col md:flex-row md:gap-4 mb-2">
               <FormField
                 control={form.control}
@@ -152,12 +178,14 @@ const EssayEvaluationForm: React.FC = () => {
                     </FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger
-                          className="border-[1px] rounded-3xl"
-                          id="courseworkType"
-                        >
-                          <SelectValue placeholder="Coursework Type" />
-                        </SelectTrigger>
+                        <motion.div variants={buttonVariants} whileTap="tap">
+                          <SelectTrigger
+                            className="border-[1px] rounded-3xl"
+                            id="courseworkType"
+                          >
+                            <SelectValue placeholder="Coursework Type" />
+                          </SelectTrigger>
+                        </motion.div>
                       </FormControl>
                       <SelectContent position="popper">
                         <SelectItem value="essay">Essay</SelectItem>
@@ -189,12 +217,14 @@ const EssayEvaluationForm: React.FC = () => {
                     </FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger
-                          className="border-[1px] rounded-3xl"
-                          id="subject"
-                        >
-                          <SelectValue placeholder="Subject" />
-                        </SelectTrigger>
+                        <motion.div variants={buttonVariants} whileTap="tap">
+                          <SelectTrigger
+                            className="border-[1px] rounded-3xl"
+                            id="subject"
+                          >
+                            <SelectValue placeholder="Subject" />
+                          </SelectTrigger>
+                        </motion.div>
                       </FormControl>
                       <SelectContent position="popper">
                         <SelectItem value="english">English</SelectItem>
@@ -228,6 +258,7 @@ const EssayEvaluationForm: React.FC = () => {
                       placeholder="Enter your essay title"
                       {...field}
                       className="rounded-3xl w-full"
+                      id="essayTitle"
                     />
                   </FormControl>
                   {form.formState.errors.essayTitle && (
@@ -238,23 +269,22 @@ const EssayEvaluationForm: React.FC = () => {
                 </FormItem>
               )}
             />
-            <a className="cursor-pointer">
-              <Button
-                type="submit"
-                variant="default"
-                className="font-Mont rounded-3xl mt-4 bg-[#ADB8C9] w-full sm:w-auto"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Evaluating...
-                  </>
-                ) : (
-                  "Evaluate your Score"
-                )}
-              </Button>
-            </a>
+
+            <Button
+              type="submit"
+              variant="default"
+              className="font-Mont rounded-3xl mt-4 bg-[#ADB8C9] w-full sm:w-auto"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Evaluating...
+                </>
+              ) : (
+                "Evaluate"
+              )}
+            </Button>
           </form>
         </Form>
       </FormProvider>

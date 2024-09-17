@@ -1,12 +1,17 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
+import * as pdfjsLib from "pdfjs-dist";
+/*import { PDFDocumentProxy } from "pdfjs-dist/types/display/api";*/
+import { PDFDocumentProxy } from "pdfjs-dist";
 
-// Define your interfaces
+pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+
 interface FileMetadata {
   name: string;
   size: number;
   type: string;
-  file: File | null; // Store the actual file, but it will be null in persisted state
+  file: File | null;
+  base64: string;
 }
 
 interface EvaluationResult {
@@ -20,6 +25,7 @@ interface EvaluationResult {
 }
 
 interface Coursework {
+  file: File | undefined;
   id: string;
   title: string;
   subject: string;
@@ -29,7 +35,7 @@ interface Coursework {
   fileMetadata: FileMetadata;
   rating: number;
   language: string;
-  thumbnailUrl: string; // The thumbnail URL can be a placeholder
+  thumbnailUrl: string;
   evaluationResult: EvaluationResult | null;
 }
 
@@ -59,15 +65,51 @@ interface EssayEvaluationState {
   resetEvaluation: () => void;
 }
 
-// Function to generate a placeholder thumbnail
 const generateThumbnail = async (pdfFile: File): Promise<string> => {
   try {
-    // Placeholder thumbnail URL
-    const placeholderThumbnailUrl = "/path/to/placeholder.png"; // Replace with actual path if needed
-    return placeholderThumbnailUrl;
+    const fileReader = new FileReader();
+
+    // Return a promise that resolves once the FileReader reads the file
+    return new Promise((resolve, reject) => {
+      fileReader.onload = async function (e) {
+        const typedArray = new Uint8Array(e.target?.result as ArrayBuffer);
+        const pdfDocument: PDFDocumentProxy = await pdfjsLib.getDocument(
+          typedArray
+        ).promise;
+
+        // Render the first page
+        const page = await pdfDocument.getPage(1);
+        const scale = 1.5; // Adjust the scale if needed
+        const viewport = page.getViewport({ scale });
+
+        // Create a canvas to render the thumbnail
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+
+        const renderContext = {
+          canvasContext: context!,
+          viewport: viewport,
+        };
+
+        await page.render(renderContext).promise;
+
+        // Convert the canvas to an image URL (base64)
+        const thumbnailUrl = canvas.toDataURL("image/png");
+
+        resolve(thumbnailUrl); // Resolve with the generated thumbnail URL
+      };
+
+      fileReader.onerror = () => {
+        reject("Error reading the PDF file");
+      };
+
+      fileReader.readAsArrayBuffer(pdfFile);
+    });
   } catch (error) {
     console.error("Failed to generate thumbnail:", error);
-    return ""; // Return an empty string if thumbnail generation fails
+    return "/images/thumbnail.png"; // Provide a fallback thumbnail if generation fails
   }
 };
 
@@ -99,7 +141,7 @@ const useEssayEvaluationStore = create<EssayEvaluationState>()(
           return;
         }
 
-        // Use placeholder for thumbnail URL
+        // Generate the thumbnail from the PDF file
         const thumbnailUrl = await generateThumbnail(pdfFileMetadata.file);
 
         set((state) => ({
@@ -110,7 +152,7 @@ const useEssayEvaluationStore = create<EssayEvaluationState>()(
               id: Date.now().toString(),
               uploadDate: new Date().toISOString(),
               rating: 0,
-              thumbnailUrl,
+              thumbnailUrl, // Use the generated thumbnail URL
               evaluationResult: null,
             },
           ],
@@ -159,11 +201,11 @@ const useEssayEvaluationStore = create<EssayEvaluationState>()(
       partialize: (state) => ({
         ...state,
         pdfFileMetadata: state.pdfFileMetadata
-          ? { ...state.pdfFileMetadata, file: null }
+          ? { ...state.pdfFileMetadata, file: null, base64: null }
           : null,
         courseworkList: state.courseworkList.map((item) => ({
           ...item,
-          fileMetadata: { ...item.fileMetadata, file: null },
+          fileMetadata: { ...item.fileMetadata, file: null, base64: null },
         })),
       }),
     }
