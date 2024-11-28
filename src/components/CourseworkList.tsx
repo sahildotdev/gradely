@@ -62,6 +62,7 @@ const CourseworkList: React.FC = () => {
               rating={coursework.rating}
               language={coursework.language}
               thumbnailUrl={coursework.thumbnailUrl}
+              file={coursework.file}
             />
           </motion.div>
         ))}

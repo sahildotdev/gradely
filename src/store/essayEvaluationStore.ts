@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import * as pdfjsLib from "pdfjs-dist";
-/*import { PDFDocumentProxy } from "pdfjs-dist/types/display/api";*/
 import { PDFDocumentProxy } from "pdfjs-dist";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
@@ -69,7 +68,6 @@ const generateThumbnail = async (pdfFile: File): Promise<string> => {
   try {
     const fileReader = new FileReader();
 
-    // Return a promise that resolves once the FileReader reads the file
     return new Promise((resolve, reject) => {
       fileReader.onload = async function (e) {
         const typedArray = new Uint8Array(e.target?.result as ArrayBuffer);
@@ -77,12 +75,10 @@ const generateThumbnail = async (pdfFile: File): Promise<string> => {
           typedArray
         ).promise;
 
-        // Render the first page
         const page = await pdfDocument.getPage(1);
-        const scale = 1.5; // Adjust the scale if needed
+        const scale = 1.5;
         const viewport = page.getViewport({ scale });
 
-        // Create a canvas to render the thumbnail
         const canvas = document.createElement("canvas");
         const context = canvas.getContext("2d");
         canvas.width = viewport.width;
@@ -95,10 +91,9 @@ const generateThumbnail = async (pdfFile: File): Promise<string> => {
 
         await page.render(renderContext).promise;
 
-        // Convert the canvas to an image URL (base64)
         const thumbnailUrl = canvas.toDataURL("image/png");
 
-        resolve(thumbnailUrl); // Resolve with the generated thumbnail URL
+        resolve(thumbnailUrl);
       };
 
       fileReader.onerror = () => {
@@ -109,7 +104,7 @@ const generateThumbnail = async (pdfFile: File): Promise<string> => {
     });
   } catch (error) {
     console.error("Failed to generate thumbnail:", error);
-    return "/images/thumbnail.png"; // Provide a fallback thumbnail if generation fails
+    return "/images/thumbnail.png";
   }
 };
 
@@ -141,7 +136,6 @@ const useEssayEvaluationStore = create<EssayEvaluationState>()(
           return;
         }
 
-        // Generate the thumbnail from the PDF file
         const thumbnailUrl = await generateThumbnail(pdfFileMetadata.file);
 
         set((state) => ({
@@ -152,7 +146,7 @@ const useEssayEvaluationStore = create<EssayEvaluationState>()(
               id: Date.now().toString(),
               uploadDate: new Date().toISOString(),
               rating: 0,
-              thumbnailUrl, // Use the generated thumbnail URL
+              thumbnailUrl,
               evaluationResult: null,
             },
           ],

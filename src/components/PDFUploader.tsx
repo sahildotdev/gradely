@@ -5,6 +5,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { usePDFThumbnail } from "@/hooks/usePDFThumbnail";
 import Image from "next/image";
+import { Trash2 } from "lucide-react";
 
 const MAX_FILE_SIZE = 25 * 1024 * 1024;
 
@@ -119,10 +120,11 @@ const FileItem: React.FC<{ file: File; onRemove: (file: File) => void }> = ({
       </div>
       <Button
         type="button"
-        variant="destructive"
+        className=" hover:bg-transparent"
+        variant="ghost"
         onClick={() => onRemove(file)}
       >
-        Remove
+        <Trash2 />
       </Button>
     </div>
   );
